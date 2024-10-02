@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site do amor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1px;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+        img {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 100%; /* Makes the image responsive */
+            max-height: 100%; /* Ensures it doesn't exceed container height */
+            height: auto;
+            width: auto;
+            position: relative; /* Keep the image in normal flow */
+            z-index: 1; /* Ensure the img is above the blurred background */
+        }
+        .image-container {
+            position: relative; /* Set position relative for absolute positioning of the image */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 74vh; /* Container height */
+            flex: 1;
+            padding-bottom: 50px;
+            overflow: hidden; /* Prevents overflow of the blurred image */
+            background-size: cover; /* Ensures the background covers the entire container */
+            background-position: center; /* Centers the background image */
+        }
+        .blurry-background {
+            position: absolute; /* Position the blurred image absolutely */
+            top: 0;
+            left: 0;
+            height: 100%; /* Fill the height of the container */
+            width: 100%; /* Fill the width of the container */
+            object-fit: cover; /* Cover the area while maintaining aspect ratio */
+            filter: blur(8px); /* Apply blur to the image */
+            z-index: 0; /* Ensure the blurred image is behind the other content */
+        }
+
+        /* Progress bar container */
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0df;
+            border-radius: 25px;
+            padding: 5px;
+            margin: 20px 0;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            height: 30px;
+            width: 0;
+            background-color: #4caf50;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Centering */
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+
+        #stopwatch {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        /* Styling for the image */
+        #random-image {
+            max-width: 70%;
+            max-height: 70vh;
+            width: auto;
+            height: auto;
+            border: 5px solid #333;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Uma retrospectiva Bianca & Brian</h1>
+    </header>
+
+    <div class="image-container" id="image-container">
+        <img id="random-image" src="" alt="Random Image">
+        <img id="blurry-background" class="blurry-background" src="" alt="Blurry Background">
+    </div>
+
+    <footer>
+        <div class="container">
+            <h1>Progresso até nosso ano ❤️</h1>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="stopwatch">00:00:00:00:00</div>
+    </footer>
+
+</body>
+
+    <script>
+        // Get the current day of the year
+        function getDayOfYear() {
+            // Get the current date (now)
+            const now = new Date();
+
+            // Set the 'start' date (fixed yearly reset date)
+            const start = new Date('2024-09-02T00:00:00'); // Example start date
+
+            // Calculate the year of the start date and the current year
+            const currentYear = now.getFullYear();
+            let startYear = start.getFullYear();
+
+            // Adjust the 'start' date to the current year if needed
+            if (currentYear > startYear) {
+                start.setFullYear(currentYear);
+            }
+
+            // If 'now' is before 'start', set the start date to the previous year
+            if (now < start) {
+                start.setFullYear(currentYear - 1);
+            }
+
+            // Calculate the difference in milliseconds
+            const diff = now - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+
+            // Calculate the number of days passed since the last reset
+            const daysPassed = Math.floor(diff / oneDay);
+
+            // Check if the current year is a leap year to adjust for 366 days
+            const daysInYear = (isLeapYear(start.getFullYear())) ? 366 : 365;
+
+            // Calculate the current day of the year, resetting after the full year is completed
+            return daysPassed % daysInYear;
+        }
+
+// Helper function to check if a year is a leap year
+function isLeapYear(year) {
+    return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+}
+
+        // Calculate progress percentage
+        function calculateProgress() {
+            const dayOfYear = getDayOfYear();
+            const progressPercentage = (dayOfYear / 365) * 100;
+
+            // Update progress bar width
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = progressPercentage + '%';
+        }
+
+        // Initialize progress calculation
+        calculateProgress();
+
+        // Set your specific point in time (Year, Month (0-indexed), Day, Hour, Minute, Second)
+        const startTime = new Date('2024-09-02T00:00:00'); // Modify this to any specific date and time
+
+        // Function to calculate the elapsed time
+        function updateStopwatch() {
+            const now = new Date();
+            const elapsed = now - startTime;
+
+            // Calculate hours, minutes, and seconds
+            let totalDays = Math.floor(elapsed / (1000 * 60 * 60 * 24));
+            let totalHours = Math.floor(elapsed % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+            const minutes = Math.floor((elapsed % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((elapsed % (1000 * 60)) / 1000);
+
+            // Calculate months and days
+            const months = Math.floor(totalDays / 30); // Approximate months (30 days per month)
+            const hours = Math.floor(totalHours);
+            const days = totalDays % 30; // Remaining days after months
+
+            // Format the time (leading zeros)
+            const formattedMonths = months.toString().padStart(2, '0');
+            const formattedDays = days.toString().padStart(2, '0');
+            const formattedHours = hours.toString().padStart(2, '0');
+            const formattedMinutes = minutes.toString().padStart(2, '0');
+            const formattedSeconds = seconds.toString().padStart(2, '0');
+
+            // Update the stopwatch display
+            document.getElementById('stopwatch').textContent = `${formattedMonths} ${formattedMonths > 1 ? 'meses' : 'mês'}, ${formattedDays} dias, ${formattedHours} horas, ${formattedMinutes} minutos e ${formattedSeconds} segundos`;
+        }
+
+        // Call the updateStopwatch function every second (1000ms)
+        setInterval(updateStopwatch, 1000);
+
+        // Array of image URLs
+        const images = [
+            './images/img (1).jpg',
+            './images/img (2).jpg',
+            './images/img (3).jpg',
+            './images/img (4).jpg',
+            './images/img (5).jpg',
+            './images/img (6).jpg',
+            './images/img (7).jpg',
+            './images/img (8).jpg',
+            './images/img (9).jpg',
+            './images/img (10).jpg',
+            './images/img (11).jpg',
+            './images/img (12).jpg',
+            './images/img (13).jpg',
+            './images/img (14).jpg',
+            './images/img (15).jpg',
+            './images/img (16).jpg',
+            './images/img (17).jpg',
+            './images/img (18).jpg',
+            './images/img (19).jpg',
+            './images/img (20).jpg',
+            './images/img (21).jpg',
+            './images/img (22).jpg',
+            './images/img (23).jpg',
+            './images/img (24).jpg',
+            './images/img (25).jpg',
+            './images/img (26).jpg',
+            './images/img (27).jpg',
+            './images/img (28).jpg',
+            './images/img (29).jpg',
+            './images/img (30).jpg',
+            './images/img (31).jpg',
+            './images/img (32).jpg',
+            './images/img (33).jpg',
+            './images/img (34).jpg',
+            './images/img (35).jpg',
+            './images/img (36).jpg',
+            './images/img (37).jpg',
+            './images/img (38).jpg',
+            './images/img (39).jpg',
+            './images/img (40).jpg',
+            './images/img (41).jpg',
+            './images/img (42).jpg',
+            './images/img (43).jpg',
+            './images/img (44).jpg',
+            './images/img (45).jpg',
+            './images/img (46).jpg',
+            './images/img (47).jpg',
+            './images/img (48).jpg',
+            './images/img (49).jpg',
+            './images/img (50).jpg',
+            './images/img (51).jpg',
+            './images/img (52).jpg',
+            './images/img (53).jpg',
+            './images/img (54).jpg',
+            './images/img (55).jpg',
+            './images/img (56).jpg',
+            './images/img (57).jpg',
+            './images/img (58).jpg',
+            './images/img (59).jpg',
+            './images/img (60).jpg',
+            './images/img (61).jpg',
+            './images/img (62).jpg',
+            './images/img (63).jpg',
+            './images/img (64).jpg',
+            './images/img (65).jpg',
+            './images/img (66).jpg',
+            './images/img (67).jpg',
+            './images/img (68).jpg',
+            './images/img (69).jpg',
+            './images/img (70).jpg',
+            './images/img (71).jpg',
+            './images/img (72).jpg',
+            './images/img (73).jpg',
+            './images/img (74).jpg',
+            './images/img (75).jpg',
+            './images/img (76).jpg',
+            './images/img (77).jpg',
+            './images/img (78).jpg',
+            './images/img (79).jpg',
+            './images/img (80).jpg',
+            './images/img (81).jpg',
+            './images/img (82).jpg',
+            './images/img (83).jpg',
+            './images/img (84).jpg',
+            './images/img (85).jpg',
+            './images/img (86).jpg',
+            './images/img (87).jpg',
+            './images/img (88).jpg',
+            './images/img (89).jpg',
+            './images/img (90).jpg',
+            './images/img (91).jpg',
+            './images/img (92).jpg'
+        ];
+
+        // Function to select a random image from the array
+        function getRandomImage() {
+            const randomIndex = Math.floor(Math.random() * images.length);
+            return images[randomIndex];
+        }
+
+        // Set the random image on page load
+        const randomImage = getRandomImage();
+        document.getElementById('random-image').src = randomImage;
+        document.getElementById('blurry-background').src = randomImage; // Set the same image as background
+    </script>
+</html>
