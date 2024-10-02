@@ -17,6 +17,7 @@
             color: white;
             padding: 1px;
             text-align: center;
+            z-index: 0;
         }
         footer {
             text-align: center;
@@ -42,7 +43,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 65vh; /* Container height */
+            height: 60vh; /* Container height */
             flex: 1;
             padding-bottom: 50px;
             overflow: hidden; /* Prevents overflow of the blurred image */
@@ -50,14 +51,14 @@
             background-position: center; /* Centers the background image */
         }
         .blurry-background {
-            position: absolute; /* Position the blurred image absolutely */
+            position: fixed; /* Position the blurred image absolutely */
             top: 0;
             left: 0;
-            height: 100%; /* Fill the height of the container */
-            width: 100%; /* Fill the width of the container */
+            height: 100vh; /* Fill the height of the container */
+            width: 100vw; /* Fill the width of the container */
             object-fit: cover; /* Cover the area while maintaining aspect ratio */
             filter: blur(8px); /* Apply blur to the image */
-            z-index: 0; /* Ensure the blurred image is behind the other content */
+            z-index: -1; /* Ensure the blurred image is behind the other content */
         }
 
         /* Progress bar container */
